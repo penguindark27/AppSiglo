@@ -5,7 +5,7 @@ class connection
 	var $cn;
 	function __construct()
 	{
-		$this->cn=mysqli_connect("localhost","siglo21","siglo212014","dbsiglo");
+		$this->cn=mysqli_connect("xxxxx","xxxxx","xxxxx","xxxxx");
 		if($this->connect_errno)
 		{die("Error connection string ".$this->cn->connect_errno);}
 	}
