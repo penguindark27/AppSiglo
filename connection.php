@@ -53,9 +53,28 @@ class connection
 		foreach($list as $row)
 		{
 		  $nitem=$nitem+1;
-		  $p_values.="('$p_idinvoice','$nitem','".$row['cantidad']."','".$row['idcatalogo']."','".$row['idpagina']."','".$row['sufijo']."','".
-					$row['idproducto']."','".$row['color']."','".$row['tamanio']."','".$row['peso']."','".
-					$row['punitario']."','".$row['total']."','".$row['tipo']."'),";
+          $p_idcatalogo = 'NULL';
+          if ($row['idcatalogo']!=''){
+            $p_idcatalogo="'".$row['idcatalogo']."'";
+          };
+          $p_pagina = 'NULL';
+          if ($row['idpagina']!=''){
+            $p_pagina="'".$row['idpagina']."'";
+          };
+          $p_cantidad = '0';
+          if ($row['cantidad']!=''){
+            $p_cantidad="'".$row['cantidad']."'";
+          };
+          $p_unitario = '0';
+          if ($row['punitario']!=''){
+            $p_unitario="'".$row['punitario']."'";
+          };
+          $p_total = '0';
+          if ($row['total']!=''){
+            $p_total="'".$row['total']."'";
+          };
+
+		  $p_values.="('$p_idinvoice','$nitem',".$p_cantidad.",".$p_idcatalogo.",".$p_pagina.",'".$row['sufijo']."','".$row['idproducto']."','".$row['color']."','".$row['tamanio']."','".$row['peso']."',".$p_unitario.",".$p_total.",'".$row['tipo']."'),";
 		}
 		$p_values=substr(trim($p_values),0,strlen($p_values)-1);
 		return ($query.$p_values);

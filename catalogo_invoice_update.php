@@ -15,7 +15,18 @@ $fields_names=array('fch_ingreso','id_cliente','cliente_direccion','cliente_ciud
 		'cliente_state','cliente_zipcode','cliente_telefono','cliente_celular');
 $nitem=0;
 for($nitem=0;$nitem<=count($lst_fields)-1;$nitem++)
-{ $item[$fields_names[$nitem]]=trim($_REQUEST[$lst_fields[$nitem]]);}		
+{ 
+	$field=$fields_names[$nitem];
+    if($field=='id_cliente'){
+            if ($_REQUEST[$lst_fields[$nitem]]==''){
+                    $item[$field]=null;
+            }else{
+                    $item[$fields_names[$nitem]]=trim($_REQUEST[$lst_fields[$nitem]]);
+            };
+    }else{
+            $item[$fields_names[$nitem]]=trim($_REQUEST[$lst_fields[$nitem]]);
+    };
+}		
 	
 if(strlen($_REQUEST['txt_idinvoice'])>0)
 {$item['user_modif']=$_SESSION['user'];  }
@@ -36,9 +47,12 @@ if($_REQUEST['txt_idinvoice']=="")
 	$p_sentence=$obj->get_sentence_insert('sis_invoice',$item);
 	if(mysqli_query($obj->cn,$p_sentence))
 	{ 
-		$p_sentence_det=$obj->get_sentence_invoice_det($details,$p_idinvoice);
-		mysqli_query($obj->cn,$p_sentence_det) or die(mysqli_error($obj->cn)) ;
-		$lst_estado['id']=1; $lst_estado['descripcion']="$p_idinvoice"; }	
+		if (count($details)>0){
+			$p_sentence_det=$obj->get_sentence_invoice_det($details,$p_idinvoice);
+			mysqli_query($obj->cn,$p_sentence_det) or die(mysqli_error($obj->cn)) ;
+		};
+		$lst_estado['id']=1; $lst_estado['descripcion']="$p_idinvoice"; 
+	}	
 	else
 	{ 
 	   $advice= str_replace("'","\'",mysqli_error($obj->cn));
@@ -48,13 +62,15 @@ if($_REQUEST['txt_idinvoice']=="")
 }
 else
 {
-	$p_sentence=$obj->get_sentence_update('sis_invoice',$item," where idinvoice='".$_REQUEST['txt_idinvoice']."'") ;					
+	$p_sentence=$obj->get_sentence_update('sis_invoice',$item," where idinvoice='".$_REQUEST['txt_idinvoice']."'") ;
 	if(mysqli_query($obj->cn,$p_sentence))
 	{
 		$p_idinvoice=$_REQUEST['txt_idinvoice'];
-		$p_sentence_det=$obj->get_sentence_invoice_det($details,$p_idinvoice);
-		mysqli_query($obj->cn,$p_sentence_det) or die(mysqli_error($obj->cn)) ;
-		$lst_estado['id']=1; $lst_estado['descripcion']="$p_idinvoice"; 		
+		if (count($details)>0){
+			$p_sentence_det=$obj->get_sentence_invoice_det($details,$p_idinvoice);
+			mysqli_query($obj->cn,$p_sentence_det) or die(mysqli_error($obj->cn)) ;
+		};
+		$lst_estado['id']=1; $lst_estado['descripcion']="$p_idinvoice";
 	}
 	else
 	{  $advice= str_replace("'","\'",mysqli_error($obj->cn));
